@@ -10,8 +10,8 @@ import simulation
 def parse_arguments():
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(description="""Run a Family Tree Simulation""")
-    parser.add_argument('-n', '--num-nodes',  type=int, default=6)
-    parser.add_argument('-g', '--num-genes',  type=int, default=2, help='number of gene')
+    parser.add_argument('-n', '--num-nodes',  type=int, default=20)
+    parser.add_argument('-g', '--num-genes',  type=int, default=3, help='number of gene')
     parser.add_argument('-s', '--num-steps',  type=int, default=10)
     parser.add_argument('-b', '--batch-size', type=int, default=100)
     parser.add_argument('-o', '--output', type=str, default='result.json')
@@ -28,7 +28,7 @@ def initialize_sim(num_genes, num_nodes):
 
 def run_simulation(sim, num_steps=100,batch_size = 100):
     """Run the simulation for num_steps steps and save quantities."""
-    states = [{ 'relations' : sim.relations.tolist() }]
+    states = []
     for i in range(num_steps):
         state = {
             'node'     : sim.nodes.tolist(),
@@ -41,10 +41,13 @@ def run_simulation(sim, num_steps=100,batch_size = 100):
         sim.calculate_statics()
     return states
 
-def save_simulation(states, filename):
+def save_simulation(sim, states, filename):
     """Save the simulation result into a json file of given name."""
+    savejson = {}
+    savejson['relations'] = sim.relations.tolist()
+    savejson['states']    = states
     with open(filename, 'wt') as f:
-        serialized = json.dumps(states, sort_keys=True)
+        serialized = json.dumps(savejson, sort_keys=True)
         f.write(serialized)
 
 def main():
@@ -52,7 +55,7 @@ def main():
     args  = parse_arguments()
     sim   = initialize_sim(args.num_genes, args.num_nodes)
     states = run_simulation(sim, args.num_steps, args.batch_size)
-    save_simulation(states, args.output)
+    save_simulation(sim, states, args.output)
 
 if __name__ == '__main__':
     main()

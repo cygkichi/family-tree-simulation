@@ -46,16 +46,16 @@ class Simulation(object):
             if p < rate and self.num_nodes - i != 1:
                 #new node is parents
                 if i%2 == 0:
-                    wife_index    = np.random.choice(np.arange(1,i,2))
+                    wife_index    = np.random.choice(np.arange(1,i,2)[np.arange(1,i,2)>i-10])
                     relations.append([i+1, i, wife_index])
                 else:
-                    husband_index = np.random.choice(np.arange(0,i,2))
+                    husband_index = np.random.choice(np.arange(0,i,2)[np.arange(0,i,2)>i-10])
                     relations.append([i+1, husband_index, i])
                 i += 2
             else:
                 #new node is child
-                father_index = np.random.choice(np.arange(0,i,2))
-                mother_index = np.random.choice(np.arange(1,i,2))
+                father_index = np.random.choice(np.arange(0,i,2)[np.arange(0,i,2)>i-10])
+                mother_index = np.random.choice(np.arange(1,i,2)[np.arange(1,i,2)>i-10])
                 relations.append([i, father_index, mother_index])
                 i += 1
         self.relations = np.array(relations)
